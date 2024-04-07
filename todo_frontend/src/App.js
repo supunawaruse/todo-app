@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login/index";
+import Register from "./pages/Register/index";
+import Dashboard from "./pages/Dashboard/index";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    setIsLoggedIn(!!token); // Check if token exists in session storage
+  }, []);
+
+  const handleLoginSuccess = (token) => {
+    console.log("aaa");
+    setIsLoggedIn(true);
+    sessionStorage.setItem("token", token);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        {!isLoggedIn && (
+          <>
+            <Route
+              path="/"
+              element={<Login onLoginSuccess={handleLoginSuccess} />}
+            />
+            <Route path="/register" element={<Register />} />
+          </>
+        )}
+        {isLoggedIn && <Route path="/dashboard" element={<Dashboard />} />}
+        {/* <Route path="*" element={<div>404 Not Found</div>} /> */}
+      </Routes>
+    </Router>
   );
 }
 
