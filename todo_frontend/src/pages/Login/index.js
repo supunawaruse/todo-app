@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login = ({ history }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,6 +17,7 @@ const Login = ({ history }) => {
       const token = response.data.token;
 
       sessionStorage.setItem("token", token);
+      navigate('/dashboard')
     } catch (error) {
       setErrorMessage(error.response.data.message || "Login failed");
     }
